@@ -8,9 +8,12 @@ import (
 	"golang-redis/internal/usecase"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load()
+
 	app := fiber.New()
 	db := config.NewDatabase()
 
