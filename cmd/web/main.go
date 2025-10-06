@@ -16,11 +16,12 @@ func main() {
 
 	app := fiber.New()
 	db := config.NewDatabase()
+	rdb := config.NewRedisClient()
 
 	sessionRepository := repository.NewSessionRepository()
 	guestUC := usecase.NewGuestUsecase()
 	authUC := usecase.NewAuthUsecase(sessionRepository)
-	productUC := usecase.NewProductUseCase(db)
+	productUC := usecase.NewProductUseCase(db, rdb)
 
 	rc := route.RouteConfig{
 		App:       app,
@@ -36,4 +37,5 @@ func main() {
 	if err != nil {
 		fmt.Sprintf("Error starting server: %s", err)
 	}
+
 }

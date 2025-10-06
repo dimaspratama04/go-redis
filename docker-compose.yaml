@@ -9,5 +9,23 @@ services:
     volumes:
       - data_mysql:/var/lib/mysql
 
+  redis:
+    container_name: redis
+    image: redis:8.2.1
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus:  '0.5'
+          memory: 256M
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./Users/macbookairm1/Desktop/PERSONAL/RnD/Redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+
 volumes:
   data_mysql:

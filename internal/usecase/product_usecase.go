@@ -2,30 +2,27 @@ package usecase
 
 import (
 	"golang-redis/internal/entity"
+	"golang-redis/internal/repository"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type ProductUseCase struct {
-	DB *gorm.DB
+	Repository *repository.ProductRepository
+	DB         *gorm.DB
+	RDB        *redis.Client
 }
 
-func NewProductUseCase(db *gorm.DB) *ProductUseCase {
-	return &ProductUseCase{DB: db}
+func NewProductUseCase(db *gorm.DB, rdb *redis.Client) *ProductUseCase {
+	productRepo := repository.NewProductRepository(db, rdb)
+	return &ProductUseCase{Repository: productRepo, DB: db, RDB: rdb}
 }
 
 func (uc *ProductUseCase) CreateProduct(name string, price float64) (*entity.Product, error) {
-	product := &entity.Product{Name: name, Price: price}
-	if err := uc.DB.Create(product).Error; err != nil {
-		return nil, err
-	}
-	return product, nil
+	return uc.Repository.Create(name, price)
 }
 
 func (uc *ProductUseCase) GetAllProducts() ([]entity.Product, error) {
-	var products []entity.Product
-	if err := uc.DB.Find(&products).Error; err != nil {
-		return nil, err
-	}
-	return products, nil
+	return uc.Repository.GetAll()
 }
