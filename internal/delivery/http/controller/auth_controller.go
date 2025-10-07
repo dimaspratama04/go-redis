@@ -25,7 +25,7 @@ func (ac *AuthController) Login(c *fiber.Ctx) error {
 	var user entity.User
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid request",
+			"error": "invalid http",
 		})
 	}
 
@@ -57,7 +57,7 @@ func (ac *AuthController) Logout(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid request",
+			"error": "invalid http",
 		})
 	}
 

@@ -2,9 +2,7 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"golang-redis/internal/entity"
-	"time"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -30,25 +28,23 @@ func (p *ProductRepository) Create(name string, price float64) (*entity.Product,
 	return product, nil
 }
 
+func (p *ProductRepository) CreateBatch(products []entity.Product) error {
+	return p.DB.Create(&products).Error
+}
+
 func (p *ProductRepository) GetAll() ([]entity.Product, error) {
 	var products []entity.Product
-	cacheRedisKey := "products:all"
-
-	// check cache first
-	cached, err := p.RDB.Get(context.Background(), cacheRedisKey).Result()
-	if err == nil && cached != "" {
-		_ = json.Unmarshal([]byte(cached), &products)
-		return products, nil
-	}
-
-	// check from db if cache miss
 	if err := p.DB.Find(&products).Error; err != nil {
 		return nil, err
 	}
-
-	// store to redis 60s
-	productsJSON, _ := json.Marshal(products)
-	p.RDB.Set(context.Background(), cacheRedisKey, productsJSON, 60*time.Second)
-
 	return products, nil
+}
+
+func (p *ProductRepository) GetByID(id int) (*entity.Product, error) {
+	var product entity.Product
+	if err := p.DB.Where("id = ?", id).First(&product).Error; err != nil {
+		return nil, err
+	}
+
+	return &product, nil
 }
