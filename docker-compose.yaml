@@ -15,17 +15,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 512M
         reservations:
-          cpus:  '0.5'
+          cpus: "0.5"
           memory: 256M
     ports:
       - "6379:6379"
     volumes:
-      - ./Users/macbookairm1/Desktop/PERSONAL/RnD/Redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
-
 
 volumes:
   data_mysql:

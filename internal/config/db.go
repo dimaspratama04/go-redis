@@ -44,7 +44,7 @@ func NewDatabase() *gorm.DB {
 		log.Fatal("failed to connect database:", err)
 	}
 
-	log.Println("Connected to database")
+	log.Println("✅ Connected to database")
 
 	return db
 }
