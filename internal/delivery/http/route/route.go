@@ -66,7 +66,8 @@ func (rc *RouteConfig) SetupAuthRoute() {
 	rc.App.Use(rc.AuthMiddleware)
 
 	rc.App.Post("/api/users/logout", authController.Logout)
-	rc.App.Get("/api/products", productController.GetAllProduct)
+	rc.App.Get("/api/products", productController.GetProducts)
 	rc.App.Post("/api/products", productController.CreateProduct)
 	rc.App.Get("/api/products/:id", productController.GetProductByID)
+	// rc.App.Get("/api/products", productController.GetProductByCategory)
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"golang-redis/internal/config"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -26,7 +26,7 @@ func main() {
 	err := app.Listen(":3000")
 
 	if err != nil {
-		fmt.Sprintf("Error starting server: %s", err)
+		log.Println("Error starting server: %s", err)
 	}
 
 }

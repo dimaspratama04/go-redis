@@ -14,11 +14,10 @@ func StartProductConsumer(conn *amqp.Connection) {
 	defer ch.Close()
 
 	exchangeName := "product_events"
-	routingKey := "product_consumer_events"
 
 	err = ch.ExchangeDeclare(
 		exchangeName, // name
-		"fanout",     // type
+		"topic",      // type
 		true,         // durable
 		false,        // auto-deleted
 		false,        // internal
@@ -30,32 +29,35 @@ func StartProductConsumer(conn *amqp.Connection) {
 	}
 
 	q, err := ch.QueueDeclare(
-		routingKey, // name
-		true,       // durable
-		false,      // autoDelete
-		false,      // exclusive
-		false,      // noWait
-		nil,        // args
+		exchangeName, // name
+		true,         // durable
+		false,        // autoDelete
+		false,        // exclusive
+		false,        // noWait
+		nil,          // args
 	)
 	if err != nil {
 		log.Fatalf("Failed to declare queue: %v", err)
 	}
 
-	// err = ch.QueueBind(
-	// 	q.Name,       // queue name
-	// 	"",           // routing key
-	// 	exchangeName, // exchange
-	// 	false,
-	// 	nil,
-	// )
-	// if err != nil {
-	// 	log.Fatalf("Failed to bind queue: %v", err)
-	// }
+	routingKeyTopic := "product.*"
+
+	// queue binding
+	err = ch.QueueBind(
+		q.Name,          // queue name
+		routingKeyTopic, // routing key
+		exchangeName,    // exchange
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to bind queue: %v", err)
+	}
 
 	// consume messages
 	msgs, err := ch.Consume(
 		q.Name,
-		routingKey,
+		routingKeyTopic,
 		true,  // auto-ack
 		false, // exclusive
 		false, // no-local
